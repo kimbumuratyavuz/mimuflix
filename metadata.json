@@ -1,0 +1,6 @@
+{
+  "name": "MimuFlix",
+  "description": "M3U ve HLS video akışlarını otomatik ayrıştıran, çoklu veya tekli seçimle sıralı indiren modern film ve dizi akış yöneticisi.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

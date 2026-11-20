@@ -1,0 +1,92 @@
+package com.example.ui.theme
+
+import android.app.Activity
+import android.os.Build
+import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.darkColorScheme
+import androidx.compose.material3.dynamicDarkColorScheme
+import androidx.compose.material3.dynamicLightColorScheme
+import androidx.compose.material3.lightColorScheme
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalView
+import androidx.core.view.WindowCompat
+
+private val DarkColorScheme = darkColorScheme(
+    primary = NetflixRedBright,
+    onPrimary = Color.White,
+    primaryContainer = NetflixRedContainer,
+    onPrimaryContainer = NetflixRedOnContainer,
+    secondary = NetflixRed,
+    onSecondary = Color.White,
+    secondaryContainer = Color(0xFF380609),
+    onSecondaryContainer = Color(0xFFFFDAD6),
+    tertiary = Color(0xFFFF5252),
+    onTertiary = Color.White,
+    background = NetflixBackgroundDark,
+    onBackground = Color(0xFFF3F4F6),
+    surface = NetflixSurfaceDark,
+    onSurface = Color(0xFFF9FAFB),
+    surfaceVariant = NetflixSurfaceVariantDark,
+    onSurfaceVariant = Color(0xFFA1A1AA),
+    outline = NetflixBorderDark,
+    error = ErrorRed,
+    onError = Color.White
+)
+
+private val LightColorScheme = lightColorScheme(
+    primary = NetflixRed,
+    onPrimary = Color.White,
+    primaryContainer = Color(0xFFFFDAD6),
+    onPrimaryContainer = Color(0xFF410002),
+    secondary = NetflixRedDark,
+    onSecondary = Color.White,
+    tertiary = Color(0xFFB80710),
+    background = SlateBackgroundLight,
+    onBackground = Color(0xFF0F172A),
+    surface = SlateSurfaceLight,
+    onSurface = Color(0xFF0F172A),
+    surfaceVariant = SlateSurfaceVariantLight,
+    onSurfaceVariant = Color(0xFF64748B),
+    outline = SlateBorderLight,
+    error = ErrorRed,
+    onError = Color.White
+)
+
+@Composable
+fun MimuDownloaderTheme(
+    darkTheme: Boolean = isSystemInDarkTheme(),
+    dynamicColor: Boolean = false, // Set false by default to retain custom branding
+    content: @Composable () -> Unit
+) {
+    val colorScheme = when {
+        dynamicColor && Build.VERSION.SDK_INT >= Build.VERSION_CODES.S -> {
+            val context = LocalContext.current
+            if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+        }
+        darkTheme -> DarkColorScheme
+        else -> LightColorScheme
+    }
+
+    // Ensure status bar icons (clock, battery, signal) are dark in light theme and light in dark theme
+    val view = LocalView.current
+    if (!view.isInEditMode) {
+        SideEffect {
+            val window = (view.context as? Activity)?.window
+            if (window != null) {
+                val insetsController = WindowCompat.getInsetsController(window, view)
+                insetsController.isAppearanceLightStatusBars = !darkTheme
+                insetsController.isAppearanceLightNavigationBars = !darkTheme
+            }
+        }
+    }
+
+    MaterialTheme(
+        colorScheme = colorScheme,
+        typography = Typography,
+        content = content
+    )
+}
